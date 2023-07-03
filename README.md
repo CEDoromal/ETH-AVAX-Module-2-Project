@@ -16,7 +16,7 @@ This project demonstrates Smart Contract Frontend Integration with Vite + React 
 2. Wait for npm to install the modules. (If the installation did not start automatically, enter `npm install` on the terminal)
 3. Create 2 terminal instances. They will be used later on.
 4. On the 1st terminal instance, enter `npx hardhat node` on the terminal to start your Hardhat node. Make sure to open the port to public.
-5. Click **Ports** on the lower-left corner of the window to open the port.
+5. Click **Ports** on the lower-right corner of the window to open the port.
 6. Use the address associated with port 8545 as the RPC URL to add a new network to your MetaMask wallet. (For more details on how to add the Hardhat network to MetaMask, kindly check: https://support.chainstack.com/hc/en-us/articles/4408642503449-Using-MetaMask-with-a-Hardhat-node)
 7. Go back to the terminal and use at least one of the generated account's private key to import the account to your MetaMask wallet.
 8. On the 2nd terminal instance, enter `npx hardhat run --network localhost scripts/deploy.js` to deploy the smart contract.
