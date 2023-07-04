@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { Contract, ethers } from "ethers";
+import { useState } from "react";
 import basicMath from "../artifacts/contracts/BasicMath.sol/BasicMath.json";
 import "./App.css";
 import {
@@ -21,59 +21,27 @@ function App() {
     },
   });
 
-  const [ethWallet, setEthWallet] = useState(undefined);
-  const [account, setAccount] = useState(undefined);
-  const [contract, setContract] = useState(undefined);
 
-  const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; //MODIFY THIS TO POINT TO THE ADDRESS WHERE YOU DEPLOYED THE CONTRACT
+  const basicMathAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //MODIFY THIS TO POINT TO THE ADDRESS WHERE YOU DEPLOYED THE CONTRACT
+
+
+  const [contract, setContract] = useState(undefined);
 
   const [num1, setNum1] = useState(0);
   const [num2, setNum2] = useState(0);
-  const [result, setResult] = useState(0);
+  const [result, setResult] = useState("Unavailable");
 
-  const getWallet = async () => {
+  const connectWallet = () => {
     if (window.ethereum) {
-      setEthWallet(window.ethereum);
-    }
-
-    if (ethWallet) {
-      const account = await ethWallet.request({ method: "eth_accounts" });
-      handleAccount(account);
-    }
-  };
-
-  const handleAccount = (account) => {
-    if (account) {
-      console.log("Account connected: ", account);
-      setAccount(account);
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      provider.send("eth_requestAccounts", []).then(() => {
+        provider.getSigner().then((signer) => {
+          setContract(new Contract(basicMathAddress, basicMath.abi, signer));
+        });
+      });
     } else {
-      console.log("No account found");
+      alert("Please install MetaMask extension");
     }
-  };
-
-  const connectAccount = async () => {
-    if (!ethWallet) {
-      alert("MetaMask wallet is required to connect");
-      return;
-    }
-
-    const accounts = await ethWallet.request({ method: "eth_requestAccounts" });
-    handleAccount(accounts);
-
-    // once wallet is set we can get a reference to our deployed contract
-    getContract();
-  };
-
-  const getContract = () => {
-    const provider = new ethers.providers.Web3Provider(ethWallet);
-    const signer = provider.getSigner();
-    const basicMathContract = new ethers.Contract(
-      contractAddress,
-      basicMath.abi,
-      signer
-    );
-
-    setContract(basicMathContract);
   };
 
   const add = async (num1, num2) => {
@@ -92,7 +60,8 @@ function App() {
 
   const updateResult = async () => {
     if (!contract) return;
-    setResult(Number(await contract.getLatestResult()));
+    const latestResult = await contract.getLatestResult();
+    setResult(Number(latestResult));
   };
 
   updateResult();
@@ -101,15 +70,11 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
 
-      {useEffect(() => {
-        getWallet();
-      }, [])}
-
       <div className="flex justify-center w-full">
         <div className="flex flex-col gap-3 p-3 w-full md:w-1/2">
           <Typography variant="h3"> Latest Result </Typography>
           <Typography variant="h1" className="w-full">
-            {account? result : "Unavailable"}
+            {result}
           </Typography>
           <div className="flex justify-center gap-3">
             <TextField
@@ -145,11 +110,12 @@ function App() {
               Subtract
             </Button>
           </div>
-          <Button variant="contained" onClick={connectAccount}>
+          <Button variant="contained" onClick={connectWallet}>
             Connect Wallet
           </Button>
         </div>
       </div>
+      
     </ThemeProvider>
   );
 }
