@@ -20,7 +20,7 @@ This project demonstrates Smart Contract Frontend Integration with Vite + React 
 6. Use the address associated with port 8545 as the RPC URL to add a new network to your MetaMask wallet. (For more details on how to add the Hardhat network to MetaMask, kindly check: https://support.chainstack.com/hc/en-us/articles/4408642503449-Using-MetaMask-with-a-Hardhat-node)
 7. Go back to the terminal and use at least one of the generated account's private key to import the account to your MetaMask wallet.
 8. On the 2nd terminal instance, enter `npx hardhat run --network localhost scripts/deploy.js` to deploy the smart contract.
-9. Copy the address where the BasicMath contract is deployed and paste it as the value of `contractAddress` in **/src/App.jsx** on **Line 28**.
+9. Copy the address where the BasicMath contract is deployed and paste it as the value of `basicMathAddress` in **/src/App.jsx** on **Line 25**.
 10. Enter `npm run dev` on the terminal to start the frontend server. Make sure to open the port to public.
 11. Ctrl + Left Click the link where the frontend is said to be hosted.
 12. Connect your wallet to interact with the app functions
